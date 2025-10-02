@@ -8,8 +8,8 @@ export default function ImportContacts() {
   async function handleImportContacts() {
     try {
       if ('contacts' in navigator && 'select' in navigator.contacts) {
-        // Fields you want to fetch
-        const props = ['name', 'email', 'tel'];
+        // Ask for name, tel, and email
+        const props = ['name', 'tel', 'email'];
         const opts = { multiple: true };
 
         const selectedContacts = await navigator.contacts.select(props, opts);
@@ -23,21 +23,55 @@ export default function ImportContacts() {
   }
 
   return (
-    <div>
-      <button onClick={handleImportContacts}>
+    <div style={{ padding: '20px' }}>
+      <button
+        onClick={handleImportContacts}
+        style={{
+          padding: '10px 20px',
+          fontSize: '16px',
+          borderRadius: '8px',
+          border: 'none',
+          background: '#4CAF50',
+          color: 'white',
+          cursor: 'pointer',
+          marginBottom: '20px'
+        }}
+      >
         Import Contacts
       </button>
 
-      <div style={{ marginTop: '15px' }}>
+      <div>
         {contacts.length > 0 ? (
-          <ul>
+          <div style={{ display: 'grid', gap: '15px' }}>
             {contacts.map((c, idx) => (
-              <li key={idx}>
-                <strong>{c.name ? c.name.join(', ') : 'No Name'}</strong> <br />
-                {c.tel ? c.tel.join(', ') : 'No Number'}
-              </li>
+              <div
+                key={idx}
+                style={{
+                  border: '1px solid #ddd',
+                  padding: '15px',
+                  borderRadius: '10px',
+                  background: '#f9f9f9',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+              >
+                <h3 style={{ margin: '0 0 10px 0' }}>
+                  {c.name ? c.name.join(', ') : 'Unnamed Contact'}
+                </h3>
+
+                {c.tel && c.tel.length > 0 && (
+                  <p>
+                    📞 <strong>{c.tel.join(', ')}</strong>
+                  </p>
+                )}
+
+                {c.email && c.email.length > 0 && (
+                  <p>
+                    📧 <strong>{c.email.join(', ')}</strong>
+                  </p>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p>No contacts imported yet.</p>
         )}
