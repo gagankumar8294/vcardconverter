@@ -1,5 +1,3 @@
-// This is a Next.js-compatible React component (JS only, no TypeScript)
-// CSS is modular (VCardViewer.module.css) and no external libraries are required
 'use client'
 
 import { useState, useMemo } from 'react';
@@ -110,12 +108,21 @@ export default function VCardViewer() {
     return '"'+str+'"';
   }
 
-  var filtered = useMemo(function() {
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+      .then(() => alert('Copied to clipboard!'))
+      .catch(() => alert('Failed to copy!'));
+  }
+
+  const filtered = useMemo(() => {
     if (!query) return contacts;
-    var q = query.toLowerCase();
-    return contacts.filter(function(c) {
-      return (c.fn && c.fn.toLowerCase().includes(q)) || (c.org && c.org.toLowerCase().includes(q)) || c.emails.some(function(e){ return e.toLowerCase().includes(q); }) || c.phones.some(function(p){ return p.toLowerCase().includes(q); });
-    });
+    const q = query.toLowerCase();
+    return contacts.filter(c => 
+      (c.fn && c.fn.toLowerCase().includes(q)) || 
+      (c.org && c.org.toLowerCase().includes(q)) || 
+      c.emails.some(e => e.toLowerCase().includes(q)) || 
+      c.phones.some(p => p.toLowerCase().includes(q))
+    );
   }, [contacts, query]);
 
   return (
@@ -125,7 +132,7 @@ export default function VCardViewer() {
       <div className={styles.uploadBox}>
         <label>Upload .vcf file</label>
         <input type="file" accept=".vcf,text/vcard,text/x-vcard" onChange={handleFile} />
-        <div className={styles.textareaNote}>Or paste vCard text below and click &quot;Parse&quot;</div>
+        <div className={styles.textareaNote}>Or paste vCard text below</div>
         <textarea
           rows={6}
           value={rawText}
@@ -134,7 +141,13 @@ export default function VCardViewer() {
           className={styles.textarea}
         ></textarea>
         <div className={styles.buttonRow}>
-          <button onClick={handlePasteText}>Parse</button>
+          <button onClick={() => {
+            const allNumbers = contacts.flatMap(c => c.phones).join('\n');
+            if(allNumbers) copyToClipboard(allNumbers);
+            else alert('No numbers to copy!');
+          }}>
+            Copy Numbers
+          </button>
           <button onClick={() => {setRawText(''); setContacts([]);}}>Clear</button>
           <button onClick={downloadCSV}>Download CSV</button>
         </div>
@@ -162,19 +175,28 @@ export default function VCardViewer() {
               </div>
             </div>
             <div className={styles.cardDetails}>
-              {c.phones.length>0 && (
+              {c.phones.length > 0 && (
                 <div>
                   <div className={styles.fieldTitle}>Phones</div>
-                  <ul>{c.phones.map((p,i) => <li key={i}>{p}</li>)}</ul>
+                  <ul>
+                    {c.phones.map((p, i) => (
+                      <li key={i} className={styles.phoneItem}>
+                        {p}{' '}
+                        <button className={styles.copyBtn} onClick={() => copyToClipboard(p)}>
+                          Copy
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
-              {c.emails.length>0 && (
+              {c.emails.length > 0 && (
                 <div>
                   <div className={styles.fieldTitle}>Emails</div>
                   <ul>{c.emails.map((e,i) => <li key={i}>{e}</li>)}</ul>
                 </div>
               )}
-              {c.addresses.length>0 && (
+              {c.addresses.length > 0 && (
                 <div>
                   <div className={styles.fieldTitle}>Addresses</div>
                   <ul>{c.addresses.map((a,i) => <li key={i}>{a}</li>)}</ul>

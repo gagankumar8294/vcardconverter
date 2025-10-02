@@ -46,18 +46,22 @@ export default function BulkWhatsAppSender() {
 
   // Open WhatsApp chat for a specific number and update click state
   function openWhatsApp(idx) {
+    const numObj = numbersList[idx];
+
+    let fullNumber = numObj.country + numObj.number;
+    if (!numObj.country) fullNumber = numObj.number;
+
+    // Open WhatsApp link outside setState to prevent double increment
+    window.open(`https://wa.me/${fullNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+    // Update state for clicked button
     setNumbersList(prev => {
       const copy = [...prev];
-      const numObj = copy[idx];
-
-      let fullNumber = numObj.country + numObj.number;
-      if (!numObj.country) fullNumber = numObj.number;
-
-      const url = `https://wa.me/${fullNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-
-      copy[idx].clickCount += 1;
-      copy[idx].clicked = true;
+      copy[idx] = {
+        ...copy[idx],
+        clickCount: copy[idx].clickCount + 1,
+        clicked: true
+      };
       return copy;
     });
   }
