@@ -121,44 +121,81 @@ export default function VCardViewer() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>vCard Viewer</h1>
+
       <div className={styles.uploadBox}>
         <label>Upload .vcf file</label>
         <input type="file" accept=".vcf,text/vcard,text/x-vcard" onChange={handleFile} />
-        <div className={styles.textareaNote}>Or paste vCard text below and click "Parse"</div>
-        <textarea rows={6} value={rawText} onChange={function(e){setRawText(e.target.value);}} placeholder="Paste raw vCard text here..." className={styles.textarea}></textarea>
+        <div className={styles.textareaNote}>Or paste vCard text below and click &quot;Parse&quot;</div>
+        <textarea
+          rows={6}
+          value={rawText}
+          onChange={(e) => setRawText(e.target.value)}
+          placeholder="Paste raw vCard text here..."
+          className={styles.textarea}
+        ></textarea>
         <div className={styles.buttonRow}>
           <button onClick={handlePasteText}>Parse</button>
-          <button onClick={function(){setRawText(''); setContacts([]);}}>Clear</button>
+          <button onClick={() => {setRawText(''); setContacts([]);}}>Clear</button>
           <button onClick={downloadCSV}>Download CSV</button>
         </div>
       </div>
+
       <div className={styles.searchRow}>
-        <input value={query} onChange={function(e){setQuery(e.target.value);}} placeholder="Search name, email or phone" className={styles.searchInput} />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search name, email or phone"
+          className={styles.searchInput}
+        />
         <div className={styles.count}>{filtered.length} contact(s)</div>
       </div>
+
       <div className={styles.cardGrid}>
-        {filtered.map(function(c,idx){
-          return (
-            <div key={idx} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={styles.avatar}>{(c.fn||'U').charAt(0)}</div>
-                <div className={styles.cardInfo}>
-                  <div className={styles.cardName}>{c.fn}</div>
-                  {c.title && <div className={styles.cardSub}>{c.title}</div>}
-                  {c.org && <div className={styles.cardSub}>{c.org}</div>}
-                </div>
-              </div>
-              <div className={styles.cardDetails}>
-                {c.phones.length>0 && <div><div className={styles.fieldTitle}>Phones</div><ul>{c.phones.map(function(p,i){return <li key={i}>{p}</li>;})}</ul></div>}
-                {c.emails.length>0 && <div><div className={styles.fieldTitle}>Emails</div><ul>{c.emails.map(function(e,i){return <li key={i}>{e}</li>;})}</ul></div>}
-                {c.addresses.length>0 && <div><div className={styles.fieldTitle}>Addresses</div><ul>{c.addresses.map(function(a,i){return <li key={i}>{a}</li>;})}</ul></div>}
-                {c.notes && <div><div className={styles.fieldTitle}>Notes</div><div className={styles.notes}>{c.notes}</div></div>}
+        {filtered.map((c, idx) => (
+          <div key={idx} className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.avatar}>{(c.fn || 'U').charAt(0)}</div>
+              <div className={styles.cardInfo}>
+                <div className={styles.cardName}>{c.fn}</div>
+                {c.title && <div className={styles.cardSub}>{c.title}</div>}
+                {c.org && <div className={styles.cardSub}>{c.org}</div>}
               </div>
             </div>
-          );
-        })}
+            <div className={styles.cardDetails}>
+              {c.phones.length>0 && (
+                <div>
+                  <div className={styles.fieldTitle}>Phones</div>
+                  <ul>{c.phones.map((p,i) => <li key={i}>{p}</li>)}</ul>
+                </div>
+              )}
+              {c.emails.length>0 && (
+                <div>
+                  <div className={styles.fieldTitle}>Emails</div>
+                  <ul>{c.emails.map((e,i) => <li key={i}>{e}</li>)}</ul>
+                </div>
+              )}
+              {c.addresses.length>0 && (
+                <div>
+                  <div className={styles.fieldTitle}>Addresses</div>
+                  <ul>{c.addresses.map((a,i) => <li key={i}>{a}</li>)}</ul>
+                </div>
+              )}
+              {c.notes && (
+                <div>
+                  <div className={styles.fieldTitle}>Notes</div>
+                  <div className={styles.notes}>{c.notes}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
-      {contacts.length===0 && <div className={styles.noContacts}>No contacts loaded yet — upload a .vcf file or paste vCard text above.</div>}
+
+      {contacts.length === 0 && (
+        <div className={styles.noContacts}>
+          No contacts loaded yet — upload a .vcf file or paste vCard text above.
+        </div>
+      )}
     </div>
   );
 }
