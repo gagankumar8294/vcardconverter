@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import VCardViewer from "../../components/VcardViewer";
 import BulkNumberToVCard from "../../components/BulkNumToVcard/BulkNumToVcard";
 import BulkNumberNameVCard from "../../components/BulkNumberNameVCard/BulkNumberNameVCard";
+import BulkWhatsAppSender from "../../components/BulkWhatsAppSender/BulkWhatsAppSender";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <VCardViewer />
       <BulkNumberToVCard />
       <BulkNumberNameVCard />
+      <BulkWhatsAppSender />
     </div>
   );
 }
